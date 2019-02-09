@@ -44,8 +44,8 @@ class CameraGphoto2(CameraInterface):
     def cleanup(self):
 
         config = self._cap.get_config()
-        config.get_child_by_name('imageformat').set_value(self._imageformat)
-        config.get_child_by_name('imageformatsd').set_value(self._imageformat)
+        #config.get_child_by_name('imageformat').set_value(self._imageformat)
+        #config.get_child_by_name('imageformatsd').set_value(self._imageformat)
         # config.get_child_by_name('autopoweroff').set_value(self._autopoweroff)
         self._cap.set_config(config)
         self._cap.exit(self._ctxt)
@@ -68,14 +68,14 @@ class CameraGphoto2(CameraInterface):
         config = self._cap.get_config()
 
         # make sure camera format is not set to raw
-        imageformat = config.get_child_by_name('imageformat')
-        self._imageformat = imageformat.get_value()
-        if 'raw' in self._imageformat.lower():
-            imageformat.set_value('Large Fine JPEG')
-        imageformatsd = config.get_child_by_name('imageformatsd')
-        self._imageformatsd = imageformatsd.get_value()
-        if 'raw' in self._imageformatsd.lower():
-            imageformatsd.set_value('Large Fine JPEG')
+        #imageformat = config.get_child_by_name('imageformat')
+        #self._imageformat = imageformat.get_value()
+        #if 'raw' in self._imageformat.lower():
+        #    imageformat.set_value('Large Fine JPEG')
+        #imageformatsd = config.get_child_by_name('imageformatsd')
+        #self._imageformatsd = imageformatsd.get_value()
+        #if 'raw' in self._imageformatsd.lower():
+        #    imageformatsd.set_value('Large Fine JPEG')
 
         # make sure autopoweroff is disabled
         # this doesn't seem to work
@@ -86,8 +86,8 @@ class CameraGphoto2(CameraInterface):
         #     autopoweroff.set_value('0')
 
         # apply configuration and print current config
-        self._cap.set_config(config)
-        self._printConfig(self._cap.get_config())
+        #self._cap.set_config(config)
+        #self._printConfig(self._cap.get_config())
 
     @staticmethod
     def _configTreeToText(tree, indent=0):
@@ -127,13 +127,13 @@ class CameraGphoto2(CameraInterface):
 
         config = self._cap.get_config()
         config.get_child_by_name('output').set_value('PC')
-        self._cap.set_config(config)
+        #self._cap.set_config(config)
 
     def setIdle(self):
 
         config = self._cap.get_config()
         config.get_child_by_name('output').set_value('Off')
-        self._cap.set_config(config)
+        #self._cap.set_config(config)
 
     def getPreview(self):
 

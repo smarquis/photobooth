@@ -58,9 +58,9 @@ class PrinterPyQt5(Printer):
                                  QtCore.Qt.SmoothTransformation)
 
         printable_size = self._printer.pageRect(QPrinter.DevicePixel)
-        origin = ((printable_size.width() - picture.width()) // 2,
-                  (printable_size.height() - picture.height()) // 2)
-
+        #origin = ((printable_size.width() - picture.width()) // 2,
+        #          (printable_size.height() - picture.height()) // 2)
+        origin = (60,-90)
         painter = QtGui.QPainter(self._printer)
         painter.drawImage(QtCore.QPoint(*origin), picture)
         painter.end()
