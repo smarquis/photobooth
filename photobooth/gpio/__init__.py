@@ -48,7 +48,17 @@ class Gpio:
             lamp_pin = config.getInt('Gpio', 'lamp_pin')
             trigger_pin = config.getInt('Gpio', 'trigger_pin')
             exit_pin = config.getInt('Gpio', 'exit_pin')
+            
+            ########################################3
+            # Create printing pin on gpio pin #25
+            printing_pin = 25
+            #printing_button_light_pin = 12
+            
+            # Create Reset button on gpio pin #21
+            reset_pin = 20
 
+            
+            ########################################3
             rgb_pin = (config.getInt('Gpio', 'chan_r_pin'),
                        config.getInt('Gpio', 'chan_g_pin'),
                        config.getInt('Gpio', 'chan_b_pin'))
@@ -58,9 +68,28 @@ class Gpio:
                          lamp_pin, trigger_pin, exit_pin, *rgb_pin)
 
             self._gpio.setButton(trigger_pin, self.trigger)
+            
+            
+            
+            ###############################################
+            # Set the self.printing button to 25 and activate GPIO in the Pi
+            self._gpio.setButton(printing_pin, self.printingbutton)
+            
+            #Set the self.reset button to 21 and activate GPIO in the Pi
+            self._gpio.setButton(reset_pin, self.resetbutton)
+            ###############################################
+            
+            
             self._gpio.setButton(exit_pin, self.exit)
+            
             self._lamp = self._gpio.setLamp(lamp_pin)
             self._rgb = self._gpio.setRgb(rgb_pin)
+            
+            ######################################
+            #self._printing_light_lamp = self.gpio.setLamp(printing_button_light_pin)
+            #self._printing_light_rgb
+            #self._reset_light = self.gpio.setLamp(reset_light_pin)
+            ######################################
         else:
             logging.info('GPIO disabled')
 
@@ -106,7 +135,29 @@ class Gpio:
         if self._is_enabled:
             self._is_trigger = False
             self._gpio.lampOff(self._lamp)
-
+    
+    ####################
+    # enable the printing button to be pressed
+    def enablePrintingbutton(self):
+        if self._is_enabled:
+            self._is_printing = True
+    
+    def disablePrintingbutton(self):
+        if self._is_enabled:
+            self._is_printing = False
+            
+            
+    # enable the reset button
+    def enableResetbutton(self):
+        if self._is_enabled:
+            self._is_reset = True
+    
+    def disableResetbutton(self):
+        if self._is_enabled:
+            self._is_reset = False
+            
+            
+    #####################
     def setRgbColor(self, r, g, b):
 
         if self._is_enabled:
@@ -133,7 +184,26 @@ class Gpio:
         if self._is_trigger:
             self.disableTrigger()
             self._comm.send(Workers.MASTER, StateMachine.GpioEvent('trigger'))
+    
+    
+    
+    ###################################3
+    # Broadcast the printing button's intentions to the GPIO Event handler
+    def printingbutton(self):
 
+        if self._is_printing:
+            self.disablePrintingbutton()
+            self._comm.send(Workers.MASTER, StateMachine.GpioEvent('printingbutton'))
+    
+    # Broadcast that the reset button has been pressed 
+    def resetbutton(self):
+
+        if self._is_reset:
+            self.disableResetbutton()
+            self._comm.send(Workers.MASTER, StateMachine.GpioEvent('resetbutton'))        
+            
+            
+    #####################################
     def exit(self):
 
         self._comm.send(
@@ -145,7 +215,8 @@ class Gpio:
         self.enableTrigger()
 
         if self._is_enabled:
-            h, s, v = 0, 1, 1
+            #h, s, v = 0, 1, 1
+            h, s, v = 0, 0, 0
             while self._comm.empty(Workers.GPIO):
                 h = (h + 1) % 360
                 rgb = hsv_to_rgb(h / 360, s, v)
@@ -165,15 +236,19 @@ class Gpio:
     def showCapture(self):
 
         self.rgbOn()
-        self.setRgbColor(1, 1, .9)
+        #self.setRgbColor(1, 1, .9)
+        self.setRgbColor(1, 0, .9)
 
     def showAssemble(self):
 
         self.rgbOff()
 
     def showReview(self):
-
-        self.setRgbColor(0, .15, 0)
+        ##############################
+        self.enablePrintingbutton()
+        self.enableResetbutton()
+        ##############################
+        self.setRgbColor(0, 1, 0)
 
     def showPostprocess(self):
 
@@ -206,6 +281,7 @@ class Entities:
 
     def setButton(self, bcm_pin, handler):
 
+        
         try:
             self._buttons.append(self.Button(bcm_pin))
             self._buttons[-1].when_pressed = handler
@@ -213,7 +289,6 @@ class Entities:
             logging.error('Pin {} already in use!'.format(bcm_pin))
 
     def setLamp(self, bcm_pin):
-
         try:
             self._lamps.append(self.LED(bcm_pin))
             return len(self._lamps) - 1

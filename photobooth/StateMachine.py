@@ -467,5 +467,14 @@ class PostprocessState(State):
         if ((isinstance(event, GuiEvent) or isinstance(event, GpioEvent)) and
            event.name == 'idle'):
             context.state = IdleState()
+        ########################3
+        
+        elif ((isinstance(event, GuiEvent) or isinstance(event, GpioEvent)) and
+           event.name == 'printingbutton'):
+           logging.info('printing button has been pressed!')
+           
+        elif ((isinstance(event, GpioEvent)) and event.name == 'resetbutton'):
+           context.state = IdleState()
+        ###########################
         else:
             raise TypeError('Unknown Event type "{}"'.format(event))

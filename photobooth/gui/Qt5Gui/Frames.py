@@ -348,7 +348,10 @@ class PostprocessMessage(Widgets.TransparentOverlay):
             button_lay.addWidget(button, *pos)
 
         layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(QtWidgets.QLabel(_('Happy?')))
+        layout.addWidget(QtWidgets.QLabel(_('Press print to print!')))
+        ###############33
+        layout.addWidget(QtWidgets.QLabel(_('(Or press restart)')))
+        ##################################
         layout.addLayout(button_lay)
         self.setLayout(layout)
 
