@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import logging
 from .. import StateMachine
 
 
@@ -75,15 +76,29 @@ class GuiSkeleton:
         
         raise NotImplementedError()
     #######################
+  
+    #######################
+    
+    def showPrintingProgress(self, state):
+        
+        raise NotImplementedError()
+  
+    def PrintingProgressCountdownUpdate(self, state):
+        
+        raise NotImplementedError()
+          
+    #######################    
     def teardown(self, state):
 
         raise NotImplementedError()
         
 
+
     def handleState(self, state):
 
         if isinstance(state, StateMachine.CameraEvent):
             self.updateCountdown(state)
+  
         elif isinstance(state, StateMachine.ErrorState):
             self.showError(state)
         elif isinstance(state, StateMachine.WelcomeState):
@@ -107,6 +122,11 @@ class GuiSkeleton:
         #################################3
         elif isinstance(state, StateMachine.PrintConfirmedState):
             self.showPrintConfirmed(state)
+            
+        elif isinstance(state, StateMachine.PrintingProgressState):
+            logging.info('in showPrintingProgress(state) in Gui Skeleton')
+            self.showPrintingProgress(state)
+            
             ####################################3
         elif isinstance(state, StateMachine.TeardownState):
             self.teardown(state)

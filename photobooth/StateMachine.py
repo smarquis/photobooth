@@ -369,9 +369,15 @@ class GreeterState(State):
 
     def handleEvent(self, event, context):
 
-        if ((isinstance(event, GuiEvent) or isinstance(event, GpioEvent)) and
+        ###########If the reset button is pressed###############
+        if ((isinstance(event, GpioEvent)) and event.name == 'resetbutton'):
+           event.name = 'resetbutton'
+           context.state = IdleState()
+        ########################################################
+        elif ((isinstance(event, GuiEvent) or isinstance(event, GpioEvent)) and
            event.name == 'countdown'):
             context.state = CountdownState(1)
+
         else:
             raise TypeError('Unknown Event type "{}"'.format(event))
 
@@ -395,6 +401,15 @@ class CountdownState(State):
             pass
         elif isinstance(event, GuiEvent) and event.name == 'capture':
             context.state = CaptureState(self.num_picture)
+        ###########If the reset button is pressed###############
+        
+        
+        elif ((isinstance(event, GpioEvent)) and event.name == 'resetbutton'):
+           event.name = 'resetbutton'
+           context.state = IdleState()
+        
+        
+        ########################################################
         else:
             raise TypeError('Unknown Event type "{}"'.format(event))
 
@@ -413,8 +428,14 @@ class CaptureState(State):
         return self._num_picture
 
     def handleEvent(self, event, context):
-
-        if isinstance(event, CameraEvent) and event.name == 'countdown':
+        
+        ###########If the reset button is pressed###############
+        if ((isinstance(event, GpioEvent)) and event.name == 'resetbutton'):
+           event.name = 'resetbutton'
+           context.state = IdleState()
+        ########################################################
+           
+        elif isinstance(event, CameraEvent) and event.name == 'countdown':
             context.state = CountdownState(self.num_picture + 1)
         elif isinstance(event, CameraEvent) and event.name == 'assemble':
             context.state = AssembleState()
@@ -430,8 +451,15 @@ class AssembleState(State):
 
     def handleEvent(self, event, context):
 
-        if isinstance(event, CameraEvent) and event.name == 'review':
+        ###########If the reset button is pressed###############
+        if ((isinstance(event, GpioEvent)) and event.name == 'resetbutton'):
+           event.name = 'resetbutton'
+           context.state = IdleState()
+        ########################################################
+        
+        elif isinstance(event, CameraEvent) and event.name == 'review':
             context.state = ReviewState(event.picture)
+
         else:
             raise TypeError('Unknown Event type "{}"'.format(event))
 
@@ -450,7 +478,13 @@ class ReviewState(State):
 
     def handleEvent(self, event, context):
 
-        if isinstance(event, GuiEvent) and event.name == 'postprocess':
+        ###########If the reset button is pressed###############
+        if ((isinstance(event, GpioEvent)) and event.name == 'resetbutton'):
+           event.name = 'resetbutton'
+           context.state = IdleState()
+        ########################################################
+        
+        elif isinstance(event, GuiEvent) and event.name == 'postprocess':
             context.state = PostprocessState()
         else:
             raise TypeError('Unknown Event type "{}"'.format(event))
@@ -487,8 +521,21 @@ class PrintConfirmedState(State):
 
     def handleEvent(self, event, context):
 
-        logging.info('in PrintConfirmedState()')
+        logging.info('in PrintConfirmedState - moving to PrintingProgressState(State)')
         
-        context.state = IdleState()
+        context.state = PrintingProgressState()
+
+
+class PrintingProgressState(State):
+
+    def __init__(self):
+
+        super().__init__()
+        logging.info('in PrintingProgressState()')
         
+    def handleEvent(self, event, context):
+        if ((isinstance(event, GuiEvent) or isinstance(event, GpioEvent)) and
+           event.name == 'idle'):
+            context.state = IdleState()
         
+#######################################################3

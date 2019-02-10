@@ -218,7 +218,10 @@ class Gpio:
     def showIdle(self):
 
         self.enableTrigger()
-
+        #################################
+        self.disableResetbutton()
+        self.disablePrintingbutton()
+        #################################
         if self._is_enabled:
             #h, s, v = 0, 1, 1
             h, s, v = 0, 0, 0
@@ -229,7 +232,15 @@ class Gpio:
                 sleep(0.1)
 
     def showGreeter(self):
-
+        ########################
+        # At any time once the trigger button has been pressed,
+        # the reset button should be able to be pressed by the user.
+        # the reset button is activated here, and only when it
+        # is pressed will we go back to idleState()
+        
+        self.enableResetbutton()
+        
+        ########################
         self.disableTrigger()
         self.rgbOff()
 
@@ -249,17 +260,21 @@ class Gpio:
         self.rgbOff()
 
     def showReview(self):
-        ##############################
-        self.enablePrintingbutton()
-        self.enableResetbutton()
-        ##############################
+        
         self.setRgbColor(0, 1, 0)
 
     def showPostprocess(self):
-
+        ##############################
+        self.enablePrintingbutton()
+        
+        ##############################
+    
+    ##################################
+    
+    def showPrintingProgress(self):
         pass
     
-    
+    ##################################
     def showPrintConfirmed(self):
 
         pass

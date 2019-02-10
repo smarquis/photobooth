@@ -190,7 +190,7 @@ class PictureMessage(QtWidgets.QFrame):
 
 
 class WaitMessage(QtWidgets.QFrame):
-
+#self._setWidget(Frames.WaitMessage(_('Processing picture...')))
     def __init__(self, message):
 
         super().__init__()
@@ -227,9 +227,96 @@ class WaitMessage(QtWidgets.QFrame):
                            self._clock.visibleRegion(),
                            QtWidgets.QWidget.DrawChildren)
         painter.end()
+#########################################################
+class PrintingWaitMessage(QtWidgets.QFrame):
+
+
+    def __init__(self, time, action):
+
+        super().__init__()
+        self.setObjectName('PrintingCountdownMessage')
+
+        self._step_size = 50
+        self._value = time * (1000 // self._step_size)
+        self._action = action
+        self._picture = None
+
+        self._initProgressBar(time)
+
+    @property
+    def value(self):
+
+        return self._value
+
+    @value.setter
+    def value(self, value):
+
+        self._value = value
+
+    @property
+    def picture(self):
+
+        return self._picture
+
+    @picture.setter
+    def picture(self, picture):
+
+        if not isinstance(picture, QtGui.QImage):
+            raise ValueError('picture must be a QtGui.QImage')
+
+        self._picture = picture
+
+    def _initProgressBar(self, time):
+
+        self._bar = Widgets.RoundProgressBar(0, time, time)
+        self._bar.setFixedSize(200, 200)
+
+    def _updateProgressBar(self):
+        logging.info('updating countdown')
+        self._bar.value = self._value / (1000 // self._step_size)
+
+    def showEvent(self, event):
+
+        self._timer = self.startTimer(self._step_size)
+
+    def timerEvent(self, event):
+
+        self.value -= 1
+
+        if self.value == 0:
+            self.killTimer(self._timer)
+            self._action()
+        else:
+            self._updateProgressBar()
+            self.update()
+
+    def paintEvent(self, event):
+
+        painter = QtGui.QPainter(self)
+
+        # background image
+        if self.picture is not None:
+
+            pix = QtGui.QPixmap.fromImage(self.picture)
+            pix = pix.scaled(self.contentsRect().size(),
+                             QtCore.Qt.KeepAspectRatio,
+                             QtCore.Qt.FastTransformation)
+            origin = ((self.width() - pix.width()) // 2,
+                      (self.height() - pix.height()) // 2)
+            painter.drawPixmap(QtCore.QPoint(*origin), pix)
+
+        offset = ((self.width() - self._bar.width()) // 2,
+                  (self.height() - self._bar.height()) // 2)
+        self._bar.render(painter, QtCore.QPoint(*offset),
+                         self._bar.visibleRegion(),
+                         QtWidgets.QWidget.DrawChildren)
+
+        painter.end()
 
 
 class CountdownMessage(QtWidgets.QFrame):
+#time = countdown_time from PyQt5Gui.py
+#action is:  lambda: self._comm.send(Workers.MASTER, GuiEvent('capture'))))
 
     def __init__(self, time, action):
 
@@ -272,7 +359,7 @@ class CountdownMessage(QtWidgets.QFrame):
         self._bar.setFixedSize(200, 200)
 
     def _updateProgressBar(self):
-
+        logging.info('updating countdown')
         self._bar.value = self._value / (1000 // self._step_size)
 
     def showEvent(self, event):

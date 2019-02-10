@@ -197,7 +197,7 @@ class PyQt5Gui(GuiSkeleton):
             lambda: self._comm.send(Workers.MASTER, GuiEvent('capture'))))
 
     def updateCountdown(self, event):
-
+        logging.info('update countdown called')
         picture = Image.open(event.picture)
         self._gui.centralWidget().picture = ImageQt.ImageQt(picture)
         self._gui.centralWidget().update()
@@ -246,7 +246,35 @@ class PyQt5Gui(GuiSkeleton):
         # set State to IdleState
         self._comm.send(Workers.MASTER, GuiEvent('idle'))
     #####################################################  
-      
+    
+    
+    #####################################################
+    
+    
+    def showPrintingProgress(self, state):
+        countdown_time = 30 # add time in seconds to send to frames
+        self._setWidget(Frames.PrintingWaitMessage(
+            countdown_time,
+            lambda: self._comm.send(Workers.MASTER, GuiEvent('idle'))))
+        
+        
+        
+
+
+
+        
+        
+    #####################################################
+        
+    
+    def showCountdown(self, state):
+
+        countdown_time = self._cfg.getInt('Photobooth', 'countdown_time')
+        self._setWidget(Frames.CountdownMessage(
+            countdown_time,
+            lambda: self._comm.send(Workers.MASTER, GuiEvent('capture'))))
+
+
     def _handleKeypressEvent(self, event):
 
         if self._is_escape and event.key() == QtCore.Qt.Key_Escape:
