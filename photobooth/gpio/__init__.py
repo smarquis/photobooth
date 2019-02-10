@@ -197,6 +197,7 @@ class Gpio:
 
         if self._is_printing:
             self.disablePrintingbutton()
+            self.disableResetbutton()
             self._comm.send(Workers.MASTER, StateMachine.GpioEvent('printingbutton'))
     
     # Broadcast that the reset button has been pressed 
