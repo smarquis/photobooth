@@ -238,10 +238,13 @@ class PyQt5Gui(GuiSkeleton):
             
     ######################################################        
     def showPrintConfirmed(self, state):
+        self._enableEscape()
         tasks = self._postprocess.get(self._picture)
         for task in tasks:
             self._worker.put(task.action)
-    #####################################################    
+        self._comm.send(Workers.MASTER, GuiEvent('idle'))
+    #####################################################  
+      
     def _handleKeypressEvent(self, event):
 
         if self._is_escape and event.key() == QtCore.Qt.Key_Escape:
