@@ -332,7 +332,9 @@ class PostprocessMessage(Widgets.TransparentOverlay):
             button.setEnabled(False)
             button.update()
             worker.put(handle)
-
+            #######33
+            #super().timerEvent(0)
+            ########3
         def createButton(task):
             button = QtWidgets.QPushButton(task.label)
             button.clicked.connect(lambda: disableAndCall(button, task.action))

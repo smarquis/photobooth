@@ -116,6 +116,10 @@ class Gpio:
             self.showReview()
         elif isinstance(state, StateMachine.PostprocessState):
             self.showPostprocess()
+            #################################3
+        elif isinstance(state, StateMachine.PrintConfirmedState):
+            self.showPrintConfirmed()
+            ####################################3
         elif isinstance(state, StateMachine.TeardownState):
             self.teardown(state)
 
@@ -251,6 +255,11 @@ class Gpio:
         self.setRgbColor(0, 1, 0)
 
     def showPostprocess(self):
+
+        pass
+    
+    
+    def showPrintConfirmed(self):
 
         pass
 

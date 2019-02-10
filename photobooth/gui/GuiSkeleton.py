@@ -70,10 +70,15 @@ class GuiSkeleton:
     def showPostprocess(self, state):
 
         raise NotImplementedError()
-
+    ###############
+    def showPrintConfirmed(self, state):
+        
+        raise NotImplementedError()
+    #######################
     def teardown(self, state):
 
         raise NotImplementedError()
+        
 
     def handleState(self, state):
 
@@ -99,5 +104,9 @@ class GuiSkeleton:
             self.showReview(state)
         elif isinstance(state, StateMachine.PostprocessState):
             self.showPostprocess(state)
+        #################################3
+        elif isinstance(state, StateMachine.PrintConfirmedState):
+            self.showPrintConfirmed(state)
+            ####################################3
         elif isinstance(state, StateMachine.TeardownState):
             self.teardown(state)
