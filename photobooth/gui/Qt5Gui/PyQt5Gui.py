@@ -241,7 +241,9 @@ class PyQt5Gui(GuiSkeleton):
         self._enableEscape()
         tasks = self._postprocess.get(self._picture)
         for task in tasks:
+            # call print function
             self._worker.put(task.action)
+        # set State to IdleState
         self._comm.send(Workers.MASTER, GuiEvent('idle'))
     #####################################################  
       
