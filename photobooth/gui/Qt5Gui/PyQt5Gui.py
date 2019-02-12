@@ -197,7 +197,7 @@ class PyQt5Gui(GuiSkeleton):
             lambda: self._comm.send(Workers.MASTER, GuiEvent('capture'))))
 
     def updateCountdown(self, event):
-        logging.info('update countdown called')
+        #logging.info('update countdown called')
         picture = Image.open(event.picture)
         self._gui.centralWidget().picture = ImageQt.ImageQt(picture)
         self._gui.centralWidget().update()

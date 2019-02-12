@@ -223,8 +223,8 @@ class Gpio:
         self.disablePrintingbutton()
         #################################
         if self._is_enabled:
-            #h, s, v = 0, 1, 1
-            h, s, v = 0, 0, 0
+            h, s, v = 0, 1, 1
+            #h, s, v = 0, 0, 0
             while self._comm.empty(Workers.GPIO):
                 h = (h + 1) % 360
                 rgb = hsv_to_rgb(h / 360, s, v)
@@ -252,8 +252,8 @@ class Gpio:
     def showCapture(self):
 
         self.rgbOn()
-        #self.setRgbColor(1, 1, .9)
-        self.setRgbColor(1, 0, .9)
+        self.setRgbColor(1, 1, .9)
+        #self.setRgbColor(1, 0, .9)
 
     def showAssemble(self):
 

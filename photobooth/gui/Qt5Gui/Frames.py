@@ -240,7 +240,7 @@ class PrintingWaitMessage(QtWidgets.QFrame):
         self._value = time * (1000 // self._step_size)
         self._action = action
         self._picture = None
-
+        self._initMessage()
         self._initProgressBar(time)
 
     @property
@@ -265,6 +265,15 @@ class PrintingWaitMessage(QtWidgets.QFrame):
             raise ValueError('picture must be a QtGui.QImage')
 
         self._picture = picture
+   ############3     
+    def _initMessage(self):
+        self._message_label = _('Printing...')
+        lbl = QtWidgets.QLabel(self._message_label)
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(lbl)
+        self.setLayout(layout)
+        
+
 
     def _initProgressBar(self, time):
 
@@ -272,7 +281,7 @@ class PrintingWaitMessage(QtWidgets.QFrame):
         self._bar.setFixedSize(200, 200)
 
     def _updateProgressBar(self):
-        logging.info('updating countdown')
+        #logging.info('updating countdown')
         self._bar.value = self._value / (1000 // self._step_size)
 
     def showEvent(self, event):
@@ -312,7 +321,7 @@ class PrintingWaitMessage(QtWidgets.QFrame):
                          QtWidgets.QWidget.DrawChildren)
 
         painter.end()
-
+###############################################################
 
 class CountdownMessage(QtWidgets.QFrame):
 #time = countdown_time from PyQt5Gui.py
@@ -359,7 +368,7 @@ class CountdownMessage(QtWidgets.QFrame):
         self._bar.setFixedSize(200, 200)
 
     def _updateProgressBar(self):
-        logging.info('updating countdown')
+        #logging.info('updating countdown')
         self._bar.value = self._value / (1000 // self._step_size)
 
     def showEvent(self, event):
@@ -426,14 +435,14 @@ class PostprocessMessage(Widgets.TransparentOverlay):
             button.clicked.connect(lambda: disableAndCall(button, task.action))
             return button
 
-        buttons = [createButton(task) for task in tasks]
-        buttons.append(QtWidgets.QPushButton(_('Restart')))
-        buttons[-1].clicked.connect(idle_handle)
+        #buttons = [createButton(task) for task in tasks]
+        #buttons.append(QtWidgets.QPushButton(_('Restart')))
+        #buttons[-1].clicked.connect(idle_handle)
 
         button_lay = QtWidgets.QGridLayout()
-        for i, button in enumerate(buttons):
-            pos = divmod(i, 2)
-            button_lay.addWidget(button, *pos)
+        #for i, button in enumerate(buttons):
+        #    pos = divmod(i, 2)
+        #    button_lay.addWidget(button, *pos)
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(QtWidgets.QLabel(_('Press print to print!')))
